@@ -28,17 +28,6 @@ def read_urls(filename):
     """
     # +++your code here+++
 
-    # domain = "http://" + filename.split("_")[1]
-
-    # urls = set()
-
-    # pictures = re.findall('GET (\/.*?\.jpg)', open(filename).read())
-
-    # for picture in pictures:
-    #     urls.add(domain + picture)
-
-    # return sorted(urls)
-
     server = filename[re.search(r"_(.*?)", filename).span()[1]:]
     urls = []
     with open(filename, "r") as f:
@@ -61,25 +50,6 @@ def download_images(img_urls, dest_dir):
     Creates the directory if necessary.
     """
     # +++your code here+++
-    # if not os.path.exists(dest_dir):
-    #     os.makedirs(dest_dir)
-
-    # os.chdir(dest_dir)
-
-    # image_tags = []
-    
-    # for url in img_urls:
-    #     image_name = url.split("/")[-1]
-
-    #     response = urllib.request.urlopen(url)
-
-    #     image = open(image_name, "wb")
-    #     image.write(response.read())
-
-    #     image_tags.append('<imgsrd = "{0}"'.format(image_name))
-
-    # html_file = open("index.html", "w")
-    # html_file.write("<html><body>{0}</body></html>".format(''.join(image_tags))
         
     image_list = []
     if not os.path.isdir(dest_dir):
