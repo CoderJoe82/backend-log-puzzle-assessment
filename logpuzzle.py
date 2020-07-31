@@ -27,7 +27,29 @@ def read_urls(filename):
     alphabetically in increasing order, and screening out duplicates.
     """
     # +++your code here+++
-    pass
+
+    # domain = "http://" + filename.split("_")[1]
+
+    # urls = set()
+
+    # pictures = re.findall('GET (\/.*?\.jpg)', open(filename).read())
+
+    # for picture in pictures:
+    #     urls.add(domain + picture)
+
+    # return sorted(urls)
+
+    server = filename[re.search(r"_(.*?)", filename).span()[1]:]
+    urls = []
+    with open(filename, "r") as f:
+        for line in f:
+            paths = re.findall(r'GET \S+ HTTP', line)
+            for path in paths:
+                if path[5:-5] not in urls and "puzzle" in path:
+                    urls.append(path[5:-5])
+            urls.sort(key=lambda x: x[-8:-4])
+    urls = list(map(lambda each: "http://"+server + "/" + each, urls))
+    return urls
 
 
 def download_images(img_urls, dest_dir):
@@ -39,7 +61,44 @@ def download_images(img_urls, dest_dir):
     Creates the directory if necessary.
     """
     # +++your code here+++
-    pass
+    # if not os.path.exists(dest_dir):
+    #     os.makedirs(dest_dir)
+
+    # os.chdir(dest_dir)
+
+    # image_tags = []
+    
+    # for url in img_urls:
+    #     image_name = url.split("/")[-1]
+
+    #     response = urllib.request.urlopen(url)
+
+    #     image = open(image_name, "wb")
+    #     image.write(response.read())
+
+    #     image_tags.append('<imgsrd = "{0}"'.format(image_name))
+
+    # html_file = open("index.html", "w")
+    # html_file.write("<html><body>{0}</body></html>".format(''.join(image_tags))
+        
+    image_list = []
+    if not os.path.isdir(dest_dir):
+        os.makedirs(dest_dir)
+    for i, each in enumerate(img_urls):
+        print(f"Downloading File # {i} of {len(img_urls)}")
+        file_name = dest_dir + "/img" + str(i) + each[-4:]
+        urllib.request.urlretrieve(each, file_name)
+        image_list.append("img" + str(i) + each[-4:])
+    with open(dest_dir + "/index.html", 'a') as f:
+        f.write("<html>")
+        f.write("<body>")
+        for image in image_list:
+            f.write(f'<img src={image}>')
+        f.write("</body>")
+        f.write("</html>")
+    print("*" * 60)
+    print("Open the index.html file in a browser to see the final image")
+    print("*" * 60)
 
 
 def create_parser():
@@ -48,7 +107,7 @@ def create_parser():
     parser.add_argument('-d', '--todir',
                         help='destination directory for downloaded images')
     parser.add_argument('logfile', help='apache logfile to extract urls from')
-
+    
     return parser
 
 
